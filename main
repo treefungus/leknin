@@ -1,0 +1,157 @@
+import random
+import datetime
+import csv
+import re
+
+greetings = ["ahoj", "hi", "hello", "čau"]
+
+howdy = ["Jak se máš?", "Jak to šlape?", "What is up, pirate?"]
+howdy_plus = ["fajn", "dobře", "jde to", "ok"]
+howdy_minus = ["nic moc", "špatně", "bad"]
+
+ans_cheer = ["To je super", "Paráda!"]
+ans_symp = ["To mě mrzí", "To nerad slyším"]
+
+talk = ["Co se ti zdálo?", "Na co se chystáš?"]
+
+talk_open = ["O čem chceš mluvit?"]
+
+time = datetime.datetime.now()
+
+
+# remembering answers
+
+def remember(file, x, column):
+    file_name = file + ".csv"
+    col = column * ","
+    with open(file_name, "a+") as file:
+        file.write("\n" + str(time) + col + str(x))
+        file.close
+    return x
+
+
+def remember_more_on(file, x):
+    file_name = file + ".csv"
+    with open(file_name, "a+") as file:
+        file.write("," + str(x))
+        file.close
+    return x
+
+
+# expressing sentiment: only can do listed words
+
+def sentiment():
+    print(random.choice(ans_symp))
+
+    # asks for consent; should narrow down
+
+
+def consent():
+    no = ("No", "no", "Ne", "ne", "NE")
+    x = None
+    print("Chceš mi říct víc?")
+    x = input()
+
+    if x in no:
+        print("OK")
+        return False
+    elif x == "OK":
+        print("OK. Go on.")
+        return True
+    else:
+        return True
+
+
+def idk(x):
+    with open("topics.csv", "r") as topics:
+        reader = csv.reader(topics)
+        rand_choice = random.choice(list(reader))
+        rand_text = rand_choice[1]
+        x = None
+        print("How about " + str(rand_text) + "?")
+        x = input()
+        if x.lower() == "ok":
+            print("Go on")
+            x = None
+            x = input()
+            remember_more_on("topics", x)
+    return x
+
+
+def talk_loop(memory):
+    n = 1
+    while n > 0:
+        print("O čem chceš mluvit?")
+        x = input()
+
+        if x.lower() == "bye":
+            return print("So long, funky boy!")
+
+        elif x.lower() == "nevím" or x == "idk":
+            x = idk(x)
+            x = remember(memory, x, 1)
+
+        elif consent() == True:
+            x = remember(memory, x, 1)
+            remember_more_on("topics", x)
+            consent()
+        else:
+            talk_loop("topics")
+
+
+# sleeping breakpoint
+print("""
+I'm sleeping bot. Say hi or something.  /// escape words: "idk", "no", "bye"
+Spím. Pozdrav mě.                      /// únikové odpovědi: "nevím", "ne", "bye"
+
+""")
+
+# Hi
+
+x = input()
+
+if x.lower() in greetings:
+    print(random.choice(greetings).title())
+elif "wake up" in x.lower() and x.lower() not in greetings:
+    print("Whoa whoa! How about nice hi first?")
+else:
+    print("Co to znamená?")
+x = None
+
+# How are you?
+
+print(random.choice(howdy))
+x = input()
+
+if x.lower() in howdy_plus:
+    print(random.choice(ans_cheer))
+elif x.lower() in howdy_minus:
+    print(random.choice(ans_symp))
+
+remember("moods", x, 1)
+x = None
+
+# Dreams or plans
+
+choose_topic = random.choice(talk)
+
+print(choose_topic)
+x = input()
+
+if choose_topic == talk[0]:
+    remember("dreams", x, 1)
+else:
+    remember("plans", x, 1)
+
+# should be: if...: sentiment()
+for itm in howdy_minus:
+    if str(itm) in x:
+        sentiment()
+x = None
+y = consent()
+remember("wildMemory", y, 1)
+y = None
+
+# Topic of talk, start of loop
+
+talk_loop("topics")
