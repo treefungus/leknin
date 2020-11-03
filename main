@@ -20,22 +20,15 @@ time = datetime.datetime.now()
 
 
 # remembering answers
-def remember(file, x, column):
-    file_name = file + ".csv"
-    col = column * ","
-    with open(file_name, "a+") as file:
-        file.write("\n" + str(time) + col + str(x))
-        file.close
-    return x
 
+short_memory = []
 
-def remember_more_on(file, x):
+def remember(file, x):
     file_name = file + ".csv"
     with open(file_name, "a+") as file:
-        file.write("," + str(x))
+        file.write("\n" + str(time) + "," + str(x))
         file.close
     return x
-
 
 # expressing sentiment: only can do listed words
 
@@ -46,57 +39,62 @@ def sentiment():
 # asks for consent; should narrow down
 
 def consent():
-    no = ("No", "no", "Ne", "ne", "NE")
+    no = ("no", "ne")
     x = None
     print("Chceš mi říct víc?")
     x = input()
 
-    if x in no:
-        print("OK")
+    if x.lower() in no:
+        print("OK. Not talking about this.")
         return False
-    elif x == "OK":
-        print("OK. Go on.")
-        return True
-    else:
+    elif x.lower() == "ok":
         return True
 
-# sugests topic by randomly choosing from memory: short-term/long-term to be distinguished
+# suggests topic by randomly choosing from memory: short-term/long-term to be distinguished
 
-def idk(x):
+def idk():
+  chosen_topic = []
+
   with open("topics.csv", "r") as topics:
     reader = csv.reader(topics)
     rand_choice = random.choice(list(reader))
     rand_text = rand_choice[1]
-    x = None
+
     print("How about " + str(rand_text) + "?")
     x = input()
     if x.lower() == "ok":
+      short_memory.append(rand_text)
       print("Go on")
       x = input()
-      remember_more_on("topics", x)
+
   return x
 
 #talk loop
 
-def talk_loop(memory):
+def talk_loop(phrase=talk_open[0], memory="topics"):
 
-  print("O čem chceš mluvit?")
+  print(str(phrase))
   x = input()
 
   if x.lower() == "bye":
+    print("Remembering: " + str(short_memory))
+    remember(memory, short_memory)
     return print("So long, funky boy!")
-  elif x.lower() in ["nevím", "idk"]:
-    x = idk(x)
-    x = remember(memory, x, 1)
-    talk_loop("topics")
-  elif consent() == True:
-    x = remember(memory, x, 1)
-    remember_more_on("topics", x)
-    consent()
-    talk_loop("topics")
-  else:
-    talk_loop("topics")
 
+  elif x.lower() in ["nevím", "idk"]:
+    x = idk()
+    short_memory.append(x)
+    talk_loop()
+
+  else:
+    short_memory.append(x)
+    cons = consent()
+    if cons == True:
+        talk_loop(phrase="OK. Go on.")
+    else:
+        print("Remembering: " + str(short_memory))
+        remember(memory, short_memory)
+        talk_loop()
 
 # sleeping intro
 print("""
@@ -127,7 +125,7 @@ if x.lower() in howdy_plus:
 elif x.lower() in howdy_minus:
     print(random.choice(ans_symp))
 
-remember("moods", x, 1)
+remember("moods", x)
 x = None
 
 # Dreams or plans
@@ -138,9 +136,9 @@ print(choose_topic)
 x = input()
 
 if choose_topic == talk[0]:
-    remember("dreams", x, 1)
+    remember("dreams", x)
 else:
-    remember("plans", x, 1)
+    remember("plans", x)
 
 # should be: if...: sentiment()
 for itm in howdy_minus:
@@ -148,9 +146,9 @@ for itm in howdy_minus:
         sentiment()
 x = None
 y = consent()
-remember("wildMemory", y, 1)
+remember("wildMemory", y)
 y = None
 
 # Topic of talk, start of loop
 
-talk_loop("topics")
+talk_loop(talk_open, "topics")
