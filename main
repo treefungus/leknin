@@ -18,7 +18,6 @@ talk_open = ["O čem chceš mluvit?"]
 
 time = datetime.datetime.now()
 
-
 # remembering answers
 
 short_memory = []
@@ -59,10 +58,11 @@ def consent():
 # suggests topic by randomly choosing from memory: short-term/long-term to be distinguished
 
 def idk():
+  chosen_source = random.choice(["topics.csv", "dreams.csv"])
   chosen_topic = []
 
-  with open("topics.csv", "r") as topics:
-    reader = csv.reader(topics)
+  with open(chosen_source, "r") as source:
+    reader = csv.reader(source)
     rand_choice = random.choice(list(reader))
     rand_text = rand_choice[1]
 
@@ -72,6 +72,21 @@ def idk():
       short_memory.append(rand_text)
       print("Go on")
       x = input()
+    elif x.lower() in ["why?", "why", "proč?", "proč"]:
+      if chosen_source == "topics.csv":
+        print("We talked about it before.")
+        x = input()
+        if x.lower() == "ok":
+          short_memory.append(rand_text)
+          print("Go on")
+          x = input()
+      else:
+        print("Was in your dreams.")
+        x = input()
+        if x.lower() == "ok":
+          short_memory.append(rand_text)
+          print("Go on")
+          x = input()
 
   return x
 
