@@ -26,8 +26,14 @@ short_memory = []
 def remember(file, x):
     file_name = file + ".csv"
     with open(file_name, "a+") as file:
-        file.write("\n" + str(time) + "," + str(x))
-        file.close
+      file.write("\n" + str(time))
+      if type(x) is list:
+        file.write("," + str(x[0]))
+        for statement in x[1:]:
+          file.write("," + str(statement))
+      else:
+        file.write("," + str(x))
+    file.close
     return x
 
 # expressing sentiment: only can do listed words
@@ -84,6 +90,7 @@ def talk_loop(phrase=talk_open[0], memory="topics"):
   elif x.lower() in ["nevím", "idk"]:
     x = idk()
     short_memory.append(x)
+    remember(memory, short_memory)
     talk_loop()
 
   else:
