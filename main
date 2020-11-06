@@ -40,13 +40,11 @@ def remember(file, x):
 def sentiment():
     print(random.choice(ans_symp))
 
- 
 # asks for consent; should narrow down
 
-def consent():
+def consent(phrase="Chceš mi říct víc?"):
     no = ("no", "ne")
-    x = None
-    print("Chceš mi říct víc?")
+    print(phrase)
     x = input()
 
     if x.lower() in no:
@@ -55,9 +53,11 @@ def consent():
     elif x.lower() == "ok":
         return True
 
-# suggests topic by randomly choosing from memory: short-term/long-term to be distinguished
+# suggests topic by randomly choosing from memory or drems:
 
 def idk():
+
+  # random topic from random choice:
   chosen_source = random.choice(["topics.csv", "dreams.csv"])
   chosen_topic = []
 
@@ -66,12 +66,14 @@ def idk():
     rand_choice = random.choice(list(reader))
     rand_text = rand_choice[1]
 
-    print("How about " + str(rand_text) + "?")
+    # they suggest it and even. remember
+    print("How about {}?".format(str(rand_text)))
     x = input()
-    if x.lower() == "ok":
+    if x == "ok":
       short_memory.append(rand_text)
       print("Go on")
       x = input()
+    # they explain their choice:
     elif x.lower() in ["why?", "why", "proč?", "proč"]:
       if chosen_source == "topics.csv":
         print("We talked about it before.")
@@ -87,8 +89,16 @@ def idk():
           short_memory.append(rand_text)
           print("Go on")
           x = input()
+      # why, really, when to be added as decorator functions
 
   return x
+
+# not called yet
+def check_for_keywords(x):
+  keywords = ["idk", "no", "bye"]
+  actions = {keyword: some_action}
+  if x.lower() in keywords:
+    pass
 
 #talk loop
 
@@ -104,9 +114,10 @@ def talk_loop(phrase=talk_open[0], memory="topics"):
 
   elif x.lower() in ["nevím", "idk"]:
     x = idk()
-    short_memory.append(x)
-    remember(memory, short_memory)
-    talk_loop()
+    if x not in ["ne", "no"]:
+      short_memory.append(x)
+      remember(memory, short_memory)
+      talk_loop()
 
   else:
     short_memory.append(x)
@@ -157,9 +168,10 @@ choose_topic = random.choice(talk)
 print(choose_topic)
 x = input()
 
-if choose_topic == talk[0]:
-    remember("dreams", x)
-else:
+if x != "nic":
+  if choose_topic == talk[0]:
+    remember("dreams", [x])
+  else:
     remember("plans", x)
 
 # should be: if...: sentiment()
