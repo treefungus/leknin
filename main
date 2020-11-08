@@ -3,7 +3,7 @@ import datetime
 import csv
 
 #phrases bank
-greetings = ["ahoj", "hi", "hello", "čau"]
+greetings = {"eng": ["hi", "hello"], "cz": ["ahoj", "čau"], "klingon": ["nuqneh"]}
 
 howdy = ["Jak se máš?", "Jak to šlape?", "What is up, pirate?"]
 howdy_plus = ["fajn", "dobře", "jde to", "ok"]
@@ -40,7 +40,7 @@ def remember(file, x):
 def sentiment():
     print(random.choice(ans_symp))
 
-# asks for consent; should narrow down
+# asks for consent; will become keywords()
 
 def consent(phrase="Chceš mi říct víc?"):
     no = ("no", "ne")
@@ -53,7 +53,7 @@ def consent(phrase="Chceš mi říct víc?"):
     elif x.lower() == "ok":
         return True
 
-# suggests topic by randomly choosing from memory or drems:
+# suggests topic by randomly choosing from memory or dreams:
 
 def idk():
 
@@ -67,7 +67,7 @@ def idk():
     rand_text = rand_choice[1]
 
     # they suggest it and even. remember
-    print("How about {}?".format(str(rand_text)))
+    print(f"How about {(str(rand_text))}?")
     x = input()
     if x == "ok":
       short_memory.append(rand_text)
@@ -134,18 +134,24 @@ print("""
 I'm sleeping bot. Say hi or something.  /// escape words: "idk", "no", "bye"
 Spím. Pozdrav mě.                      /// únikové odpovědi: "nevím", "ne", "bye"
 
+I speak English / Czech / Klingon gibberish.
+Sorry for inconvenience. I'm only learning switching tongues.
+
 """)
 
-# Hi
+# Hi; will migrate to welcome()
 
 x = input()
 
-if x.lower() in greetings:
-    print(random.choice(greetings).title())
-elif "wake up" in x.lower() and x.lower() not in greetings:
-    print("Whoa whoa! How about nice hi first?")
+# unclamsy this
+all_greets = greetings["eng"]+greetings["cz"]+greetings["klingon"]
+
+if x.lower() in all_greets:
+    print(random.choice(all_greets).capitalize())
+elif "wake up" in x.lower() and x.lower() not in all_greets:
+    print("Wasn't sleeping!")
 else:
-    print("Co to znamená?")
+    print("Whoa whoa! How about nice hi first?")
 x = None
 
 # How are you?
@@ -161,7 +167,7 @@ elif x.lower() in howdy_minus:
 remember("moods", x)
 x = None
 
-# Dreams or plans
+# Dreams or plans, will migrate to dreams_plans()
 
 choose_topic = random.choice(talk)
 
