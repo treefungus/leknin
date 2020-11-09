@@ -3,10 +3,18 @@ import datetime
 import csv
 
 #phrases bank
+<<<<<<< Updated upstream
 greetings = {"eng": ["hi", "hello"], "cz": ["ahoj", "čau"], "klingon": ["nuqneh"]}
+=======
+<<<<<<< HEAD
+greetings = {"eng": ["hi", "hello"], "cze": ["ahoj", "čau"]}
+=======
+greetings = {"eng": ["hi", "hello"], "cz": ["ahoj", "čau"], "klingon": ["nuqneh"]}
+>>>>>>> c63e36dc1e1a84f359be8876bdba2b839cf2afdb
+>>>>>>> Stashed changes
 
 howdy = ["Jak se máš?", "Jak to šlape?", "What is up, pirate?"]
-howdy_plus = ["fajn", "dobře", "jde to", "ok"]
+howdy_plus = ["fajn", "dobře", "jde to", "ok", "good"]
 howdy_minus = ["nic moc", "špatně", "bad"]
 
 ans_cheer = ["To je super", "Paráda!"]
@@ -143,6 +151,15 @@ Sorry for inconvenience. I'm only learning switching tongues.
 
 x = input()
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+if x.lower() in greetings["eng"] or greetings["cze"]:
+    print(random.choice(greetings["eng"]).capitalize())
+elif "wake up" in x.lower() and x.lower() not in greetings:
+    print("Whoa whoa! How about nice hi first?")
+=======
+>>>>>>> Stashed changes
 # unclamsy this
 all_greets = greetings["eng"]+greetings["cz"]+greetings["klingon"]
 
@@ -150,6 +167,10 @@ if x.lower() in all_greets:
     print(random.choice(all_greets).capitalize())
 elif "wake up" in x.lower() and x.lower() not in all_greets:
     print("Wasn't sleeping!")
+<<<<<<< Updated upstream
+=======
+>>>>>>> c63e36dc1e1a84f359be8876bdba2b839cf2afdb
+>>>>>>> Stashed changes
 else:
     print("Whoa whoa! How about nice hi first?")
 x = None
